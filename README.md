@@ -116,7 +116,39 @@ python run_demo.py --mode fairness
 python run_demo.py --mode server --port 8000
 ```
 
-### 5. Run Automated Tests
+### 5. Interactive OCR & Priority Agent Dashboard (Streamlit)
 ```powershell
-python -m pytest tests/test_engine.py
+streamlit run app.py
 ```
+
+### 6. Run Automated Tests
+```powershell
+python -m pytest tests/test_ocr_agent_integration.py tests/test_engine.py
+```
+
+---
+
+## 5. Environment Setup & API Configuration
+
+After cloning the repository, configure your environment variables:
+
+1. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Configure API Keys**:
+   Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Open `.env` and set your **Sarvam AI API key**:
+   ```env
+   SARVAM_API_KEY=your_sarvam_api_key_here
+   ```
+   *(Get your API key at [dashboard.sarvam.ai](https://dashboard.sarvam.ai/))*
+
+3. **Verify OCR & Agent Setup**:
+   ```bash
+   python -m pytest tests/test_ocr_agent_integration.py
+   ```
