@@ -7,7 +7,7 @@ dynamic queue re-ranking, and regulatory fairness auditing.
 import asyncio
 from datetime import datetime
 from typing import Dict, Any, Optional
-from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 from database.connection import init_db
@@ -109,6 +109,35 @@ async def ingest_sarvam_signal(signal: SarvamSignalRequest):
         
     result = monitor.handle_intent_signal(loan_id=signal.loan_id, intent_data=parsed_intent)
     return result
+
+@app.post("/api/signals/ocr")
+async def ingest_sarvam_ocr_document(
+    loan_id: str = Form(...),
+    file: UploadFile = File(...)
+):
+    """
+    Direct OCR Ingestion Endpoint (Teammate 3 - Vision / OCR):
+    Uploads a document (invoice, receipt, salary slip, handwritten note).
+    Runs language-independent Sarvam Document AI OCR, extracts borrower intent,
+    updates borrower state, and instantly re-ranks the priority queue.
+    """
+    file_bytes = await file.read()
+    if not file_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+
+    intent_data = sarvam_adapter.process_ocr_document(
+        file_bytes=file_bytes,
+        filename=file.filename or "uploaded_doc.jpg",
+        mime_type=file.content_type
+    )
+
+    result = monitor.handle_intent_signal(loan_id=loan_id, intent_data=intent_data)
+    return {
+        "status": "SUCCESS",
+        "loan_id": loan_id,
+        "ocr_intent_data": intent_data,
+        "agent_decision": result
+    }
 
 @app.post("/api/payments/create-link")
 async def create_payment_link(req: CreatePaymentLinkRequest):

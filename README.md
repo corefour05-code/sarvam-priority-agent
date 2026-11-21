@@ -60,8 +60,13 @@ $$\boxed{\text{Priority Score} = \frac{P(\text{payment}) \times \text{Amount Ove
 * Tables: `borrowers`, `loans`, `payments`, `signal_events`, `call_logs`.
 * Connection configured in `config.py` via `DATABASE_URL`.
 
-### Teammate 3: OCR / Vision Ingestion
-* **Push Scanned Notices & Handwritten Notes**: `POST /api/signals/intent`
+### Teammate 3: OCR / Vision Ingestion (Fully Integrated)
+* **Direct Multipart Document Upload**: `POST /api/signals/ocr`
+  * Form data: `loan_id` (string), `file` (scanned receipt, salary slip, or diary note).
+  * Powered by Sarvam Document AI: single-pass language-independent OCR supporting all 22 Indian languages + English.
+  * Automatically parses recovery intent (`CLAIMED_PAID`, `DISPUTE`, `HARDSHIP`, `PTP_SALARY`, `PARTIAL_PAYMENT`), amounts, and due commitments.
+  * Updates borrower state and instantly re-ranks the priority calling queue.
+* **Push Pre-Extracted OCR Signals**: `POST /api/signals/intent`
   ```json
   {
     "loan_id": "LN01024",

@@ -6,13 +6,15 @@ Implements regulatory rules, economic parameters, and integration settings.
 import os
 from pydantic_settings import BaseSettings
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 class Settings(BaseSettings):
     # App Settings
     APP_NAME: str = "FinVoice Autonomous Collections & Prioritization Agent"
     DEBUG: bool = True
     
     # Database Settings
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./data/collections.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'data', 'collections.db')}")
     
     # Regulatory & Compliance Constants (RBI Guidelines)
     CALLING_WINDOW_START_HOUR: int = 8   # 08:00 AM
@@ -35,8 +37,8 @@ class Settings(BaseSettings):
     CASHFREE_API_VERSION: str = "2023-08-01"
     
     # Model Artifacts Path
-    MODEL_PATH: str = "./data/repayment_model.joblib"
-    SYNTHETIC_DATA_PATH: str = "./data/synthetic_borrowers_4200.csv"
+    MODEL_PATH: str = os.path.join(BASE_DIR, "data", "repayment_model.joblib")
+    SYNTHETIC_DATA_PATH: str = os.path.join(BASE_DIR, "data", "synthetic_borrowers_4200.csv")
     
     class Config:
         env_file = ".env"
