@@ -1,0 +1,6 @@
+loan_num,applicant_name,contact_no,due_amt,dpd,followup_date
+LN_CORRUPT_1,,9876543210,15000,10,2026-11-21
+LN_CORRUPT_2,Rohan Gupta,,25000,30,2026-11-21
+LN_CORRUPT_3,Sita Sharma,9876543212,,45,2026-11-21
+LN_CORRUPT_4,Amit Kumar,9876543213,10000,15,invalid_date_xyz
+LN_CORRUPT_5,Pooja Patel,9876543214,35000,20,2026-11-21
